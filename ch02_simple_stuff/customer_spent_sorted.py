@@ -1,3 +1,4 @@
+import os
 from pyspark import SparkConf, SparkContext
 
 
@@ -6,10 +7,14 @@ def parse_data(row):
     return (int(row[0]), float(row[2]))
 
 
+filename = "customer-orders.csv"
+filepath = os.path.join(
+    os.path.expanduser("~"), "Code", "spark_learn", "datasets", filename
+)
 conf = SparkConf().setMaster("local").setAppName("CustomerSpentSort")
 sc = SparkContext(conf=conf)
 
-data = sc.textFile("customer-orders.csv")
+data = sc.textFile(filepath)
 data = data.map(parse_data)
 
 total_per_customer = data.reduceByKey(lambda x, y: (x + y))\
